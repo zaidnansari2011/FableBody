@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator - Fable Body Link Tree</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ffeef8 0%, #ffe0f0 50%, #ffb3de 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            color: #2d1b34;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(255, 105, 180, 0.2);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 {
+            color: #ff69b4;
+            margin-bottom: 1rem;
+        }
+        .qr-section {
+            margin: 2rem 0;
+            padding: 1rem;
+            background: white;
+            border-radius: 15px;
+            border: 2px solid #ff69b4;
+        }
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+        .url-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #ff69b4;
+            border-radius: 10px;
+            font-size: 1rem;
+            margin: 1rem 0;
+            box-sizing: border-box;
+        }
+        .btn {
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .instructions {
+            background: #ffeef8;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1rem 0;
+            text-align: left;
+        }
+        .step {
+            margin: 1rem 0;
+            padding: 0.5rem 0;
+        }
+        .step-number {
+            display: inline-block;
+            background: #ff69b4;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 25px;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌸 Fable Body Link Tree Setup 🌸</h1>
+        
+        <div class="instructions">
+            <h3>📱 Quick Setup Instructions:</h3>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                <strong>Local Testing:</strong> Open your index.html file in a browser to test locally
+            </div>
+            
+            <div class="step">
+                <span class="step-number">2</span>
+                <strong>Get a URL:</strong> Choose one of these free hosting options:
+                <ul style="margin-left: 2rem;">
+                    <li><strong>GitHub Pages</strong> (Free, Custom Domain) - Recommended</li>
+                    <li><strong>Netlify</strong> (Free, Easy Drag & Drop)</li>
+                    <li><strong>Vercel</strong> (Free, Great Performance)</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">3</span>
+                <strong>Generate QR Code:</strong> Enter your URL below once it's live
+            </div>
+        </div>
+
+        <div class="qr-section">
+            <h3>🔗 QR Code Generator</h3>
+            <input type="url" id="urlInput" class="url-input" placeholder="Enter your website URL (e.g., https://yourusername.github.io/fablebody)">
+            <br>
+            <button onclick="generateQR()" class="btn">Generate QR Code</button>
+            <button onclick="downloadQR()" class="btn" id="downloadBtn" style="display:none;">Download QR Code</button>
+            
+            <div id="qrcode"></div>
+        </div>
+    </div>
+
+    <!-- QR Code Library -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    
+    <script>
+        let currentQRDataURL = null;
+
+        function generateQR() {
+            const url = document.getElementById('urlInput').value;
+            const qrContainer = document.getElementById('qrcode');
+            
+            if (!url) {
+                alert('Please enter a URL first!');
+                return;
+            }
+            
+            // Clear previous QR code
+            qrContainer.innerHTML = '';
+            
+            // Generate QR code with custom styling
+            QRCode.toCanvas(url, {
+                width: 300,
+                margin: 2,
+                color: {
+                    dark: '#ff69b4',  // Pink QR code
+                    light: '#ffffff'  // White background
+                },
+                errorCorrectionLevel: 'M'
+            }, function (err, canvas) {
+                if (err) {
+                    console.error(err);
+                    alert('Error generating QR code');
+                    return;
+                }
+                
+                qrContainer.appendChild(canvas);
+                
+                // Store the data URL for download
+                currentQRDataURL = canvas.toDataURL();
+                document.getElementById('downloadBtn').style.display = 'inline-block';
+            });
+        }
+
+        function downloadQR() {
+            if (!currentQRDataURL) {
+                alert('Please generate a QR code first!');
+                return;
+            }
+            
+            const link = document.createElement('a');
+            link.download = 'fablebody-qr-code.png';
+            link.href = currentQRDataURL;
+            link.click();
+        }
+
+        // Auto-generate QR for demo URL
+        document.addEventListener('DOMContentLoaded', function() {
+            // You can set a default URL here for testing
+            // document.getElementById('urlInput').value = 'https://your-future-url.com';
+        });
+    </script>
+</body>
+</html>
